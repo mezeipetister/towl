@@ -1,0 +1,39 @@
+syntax = "proto3";
+package towl;
+
+service TowlServer { 
+  // Add log to servers
+  rpc Add(Entry) returns (AddResponse);
+  // Get logs
+  rpc Get(GetRequest) returns (stream Entry);
+  // Set config
+  rpc Config(ConfigRequest) returns (ConfigResponse);
+  // Erase DB completely
+  rpc Erase(EraseRequest) returns (EraseResponse);
+}
+
+message Entry {
+  string id = 1;
+  string sender = 2;
+  string received_rfc3339 = 3;
+  string log_json = 4;
+}
+
+message AddResponse {}
+
+message GetRequest {
+  string after_id = 1; //sha256
+  bool follow = 2;
+}
+
+message ConfigRequest {
+  string config_json = 1;
+}
+
+message ConfigResponse {
+  string response_str = 2;
+}
+
+message EraseRequest {}
+
+message EraseResponse {}

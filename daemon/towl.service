@@ -1,0 +1,16 @@
+[Unit]
+Description=Your Daemon
+After=network-online.target
+Wants=network-online.target systemd-networkd-wait-online.service
+
+StartLimitIntervalSec=0
+StartLimitBurst=5
+
+[Service]
+Restart=always
+RestartSec=5s
+
+ExecStart=/usr/local/bin/towl_collector
+
+[Install]
+WantedBy=multi-user.target

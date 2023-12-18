@@ -1,0 +1,16 @@
+[package]
+name = "towl_daemon"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "1.0.108"
+chrono = {version = "0.4.23", features = ["serde"]}
+proto = {path = "../proto"}
+serde = {version = "1.0.147", features = ["derive"]}
+tokio = {version = "1.21.2", features = ["full"]}
+tokio-stream = {version = "0.1.11", features = ["net"]}
+tonic = "0.8.2"
+sha2 = "0.10.8"

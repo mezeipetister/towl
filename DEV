@@ -1,0 +1,5 @@
+1) Maybe socket addr is too big to store, split into ip addr and socket address.
+  NO
+2) Maybe store i64 UNIX epoch instead of DateTime<Utc>. Size or performance issue?
+  NO
+3) Should have async and sync versions

@@ -1,0 +1,5 @@
+Install:
+
+1) Place binary to /usr/local/bin/towl_collector
+2) Copy towl.service to /etc/systemd/system/towl.service
+3) systemctl start towl_daemon
