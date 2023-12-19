@@ -19,10 +19,11 @@ pub struct AddResponse {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetRequest {
-    /// sha256
     #[prost(string, tag = "1")]
+    pub after_dtime_rfc3339: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
     pub after_id: ::prost::alloc::string::String,
-    #[prost(bool, tag = "2")]
+    #[prost(bool, tag = "3")]
     pub follow: bool,
 }
 #[derive(serde::Serialize, serde::Deserialize)]

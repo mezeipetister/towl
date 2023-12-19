@@ -22,8 +22,9 @@ message Entry {
 message AddResponse {}
 
 message GetRequest {
-  string after_id = 1; //sha256
-  bool follow = 2;
+  string after_dtime_rfc3339 = 1;
+  string after_id = 2;
+  bool follow = 3;
 }
 
 message ConfigRequest {
