@@ -63,10 +63,10 @@ impl Index {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Entry {
-  pub id: String,
   pub sender: String,
   pub received: DateTime<Utc>,
-  pub log_json: String,
+  pub log_format: i32,
+  pub log_entry: String,
 }
 
 pub struct LogFile {

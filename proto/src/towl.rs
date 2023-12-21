@@ -3,13 +3,13 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Entry {
     #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
     pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
+    #[prost(string, tag = "2")]
     pub received_rfc3339: ::prost::alloc::string::String,
+    #[prost(int32, tag = "3")]
+    pub log_format: i32,
     #[prost(string, tag = "4")]
-    pub log_json: ::prost::alloc::string::String,
+    pub log_entry: ::prost::alloc::string::String,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -18,11 +18,22 @@ pub struct AddResponse {}
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListRequest {}
+#[derive(serde::Serialize, serde::Deserialize)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListResponse {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+}
+#[derive(serde::Serialize, serde::Deserialize)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetRequest {
     #[prost(string, tag = "1")]
-    pub after_dtime_rfc3339: ::prost::alloc::string::String,
+    pub file_id: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
-    pub after_id: ::prost::alloc::string::String,
+    pub after_counter: ::prost::alloc::string::String,
     #[prost(bool, tag = "3")]
     pub follow: bool,
 }
@@ -43,11 +54,14 @@ pub struct ConfigResponse {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct EraseRequest {}
+pub struct RetainRequest {
+    #[prost(int32, tag = "1")]
+    pub retain_after_this_id: i32,
+}
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct EraseResponse {}
+pub struct RetainResponse {}
 /// Generated client implementations.
 pub mod towl_server_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -135,6 +149,24 @@ pub mod towl_server_client {
             let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Add");
             self.inner.unary(request.into_request(), path, codec).await
         }
+        /// List towl files
+        pub async fn list(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListRequest>,
+        ) -> Result<tonic::Response<super::ListResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/List");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         /// Get logs
         pub async fn get(
             &mut self,
@@ -174,11 +206,11 @@ pub mod towl_server_client {
             let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Config");
             self.inner.unary(request.into_request(), path, codec).await
         }
-        /// Erase DB completely
-        pub async fn erase(
+        /// Retain these files
+        pub async fn retain(
             &mut self,
-            request: impl tonic::IntoRequest<super::EraseRequest>,
-        ) -> Result<tonic::Response<super::EraseResponse>, tonic::Status> {
+            request: impl tonic::IntoRequest<super::RetainRequest>,
+        ) -> Result<tonic::Response<super::RetainResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -189,7 +221,7 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Erase");
+            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Retain");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -206,6 +238,11 @@ pub mod towl_server_server {
             &self,
             request: tonic::Request<super::Entry>,
         ) -> Result<tonic::Response<super::AddResponse>, tonic::Status>;
+        /// List towl files
+        async fn list(
+            &self,
+            request: tonic::Request<super::ListRequest>,
+        ) -> Result<tonic::Response<super::ListResponse>, tonic::Status>;
         /// Server streaming response type for the Get method.
         type GetStream: futures_core::Stream<Item = Result<super::Entry, tonic::Status>>
             + Send
@@ -220,11 +257,11 @@ pub mod towl_server_server {
             &self,
             request: tonic::Request<super::ConfigRequest>,
         ) -> Result<tonic::Response<super::ConfigResponse>, tonic::Status>;
-        /// Erase DB completely
-        async fn erase(
+        /// Retain these files
+        async fn retain(
             &self,
-            request: tonic::Request<super::EraseRequest>,
-        ) -> Result<tonic::Response<super::EraseResponse>, tonic::Status>;
+            request: tonic::Request<super::RetainRequest>,
+        ) -> Result<tonic::Response<super::RetainResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct TowlServerServer<T: TowlServer> {
@@ -321,6 +358,42 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
+                "/towl.TowlServer/List" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListSvc<T: TowlServer>(pub Arc<T>);
+                    impl<T: TowlServer> tonic::server::UnaryService<super::ListRequest>
+                    for ListSvc<T> {
+                        type Response = super::ListResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).list(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
                 "/towl.TowlServer/Get" => {
                     #[allow(non_camel_case_types)]
                     struct GetSvc<T: TowlServer>(pub Arc<T>);
@@ -396,22 +469,22 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
-                "/towl.TowlServer/Erase" => {
+                "/towl.TowlServer/Retain" => {
                     #[allow(non_camel_case_types)]
-                    struct EraseSvc<T: TowlServer>(pub Arc<T>);
-                    impl<T: TowlServer> tonic::server::UnaryService<super::EraseRequest>
-                    for EraseSvc<T> {
-                        type Response = super::EraseResponse;
+                    struct RetainSvc<T: TowlServer>(pub Arc<T>);
+                    impl<T: TowlServer> tonic::server::UnaryService<super::RetainRequest>
+                    for RetainSvc<T> {
+                        type Response = super::RetainResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::EraseRequest>,
+                            request: tonic::Request<super::RetainRequest>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move { (*inner).erase(request).await };
+                            let fut = async move { (*inner).retain(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -420,7 +493,7 @@ pub mod towl_server_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = EraseSvc(inner);
+                        let method = RetainSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package towl;
 
-service TowlServer { 
+service TowlServer {
   // Add log to servers
   rpc Add(Entry) returns (AddResponse);
   // List towl files
@@ -17,7 +17,8 @@ service TowlServer {
 message Entry {
   string sender = 1;
   string received_rfc3339 = 2;
-  string log_json = 3;
+  int32 log_format = 3;
+  string log_entry = 4;
 }
 
 message AddResponse {}

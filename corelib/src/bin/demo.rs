@@ -76,10 +76,10 @@ async fn write(count: i32, log: Arc<Mutex<LogFile>>) {
     let mut log = log.lock().unwrap();
     for i in 0..count {
       let entry = Entry {
-        id: i.to_string(),
         sender: i.to_string(),
         received: Utc::now(),
-        log_json: format!("demodemodemo{}", i),
+        log_format: 0,
+        log_entry: format!("demodemodemo{}", i),
       };
       log.add_entry(entry).unwrap();
     }

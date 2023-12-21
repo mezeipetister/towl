@@ -44,6 +44,24 @@ Header is serialized via bincode serializer.
 
 After header we store all the log entries, serialized by bincode. All entries are appended to the file after each other - continuously.
 
+In log data we store entries.
+
+*Entry*
+
+|Field|Description|
+|---|---|
+|sender|log collector ID|
+|received|received dtime|
+|log_format|log format encoded with number|
+|log_json|json encoded log message|
+
+### Log format code table
+
+|format code|format name|
+|---|---|
+|0|Free text|
+|1|Systemctl json format|
+
 ## Data partitioning
 
 For managing log entries we have 2 kind of data partition strategy. Store entries in towl file up to a maximum entry number e.g. 50_000 / file, or creating a file based on date or time, e.g. 1 file per day.
