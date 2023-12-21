@@ -14,4 +14,4 @@ tokio = {version = "1.21.2", features = ["full"]}
 tokio-stream = {version = "0.1.11", features = ["net"]}
 tonic = "0.8.2"
 warp = "0.3.3"
-core = {path="../core"}
+corelib = {path="../corelib"}

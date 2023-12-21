@@ -3,6 +3,6 @@ members = [
   "server",
   "cli",
   "proto",
-  "core",
+  "corelib",
   "daemon"
 ]
