@@ -20,6 +20,7 @@ Header is serialized via bincode serializer.
 
 | data field | description |
 | --- | --- |
+| magic | towl magic number |
 | version | i32 |
 | org | organization name, optional |
 | title | title of file, optional |
