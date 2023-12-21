@@ -76,10 +76,15 @@ pub struct LogFile {
 }
 
 impl LogFile {
-  pub fn init(path: &str, org: String, title: String, id: usize) -> crate::Result<Self> {
-    let path = path.to_owned();
+  pub fn init(parent_path: &str, org: String, title: String, id: usize) -> crate::Result<Self> {
+    let log_path = Path::new(parent_path).join(format!("{id}.towl"));
+
+    if log_path.exists() {
+      return Err("Log file have already exist.".to_string());
+    }
+
     // Create file
-    let file = File::create(&path).map_err(|e| e.to_string())?;
+    let file = File::create(&log_path).map_err(|e| e.to_string())?;
     // Set min file size
     file
       .set_len(INDEX_START + INDEX_OFFSET)
@@ -111,9 +116,12 @@ impl LogFile {
     res.save_index()?;
 
     // Open file
-    Self::open(&path)
+    Self::open(Path::new(parent_path).join(format!("{id}.towl")).as_path())
   }
-  pub fn open(path: &str) -> crate::Result<Self> {
+  pub fn open<T>(path: T) -> crate::Result<Self>
+  where
+    T: AsRef<Path>,
+  {
     // Open file with read write access
     let mut file = OpenOptions::new()
       .read(true)

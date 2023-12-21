@@ -11,7 +11,7 @@ use tokio::{spawn, task::spawn_blocking};
 #[tokio::main]
 async fn main() {
   let log = spawn_blocking(move || {
-    corelib::fs::LogFile::init("demo.db", "GZ".to_string(), "DEMO".to_string(), 0).unwrap()
+    corelib::fs::LogFile::init("data", "GZ".to_string(), "DEMO".to_string(), 0).unwrap()
   })
   .await
   .unwrap();
@@ -73,6 +73,7 @@ async fn write(count: i32, log: Arc<Mutex<LogFile>>) {
   println!("Data creation started");
 
   spawn_blocking(move || {
+    let mut log = log.lock().unwrap();
     for i in 0..count {
       let entry = Entry {
         id: i.to_string(),
@@ -80,7 +81,6 @@ async fn write(count: i32, log: Arc<Mutex<LogFile>>) {
         received: Utc::now(),
         log_json: format!("demodemodemo{}", i),
       };
-      let mut log = log.lock().unwrap();
       log.add_entry(entry).unwrap();
     }
   })
