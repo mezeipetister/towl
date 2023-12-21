@@ -53,7 +53,7 @@ From local point of view we can grab remote data by a file ID, and/or count numb
 
 ## Performance
 
-Adding 50_000 entries takes ~ 1.74 secs [^1]
-Reading 50_000 entries takes ~ 0.58 secs [^1]
+Adding 50_000 entries takes ~ 1.74 secs [^1].
+Reading 50_000 entries takes ~ 0.58 secs [^1].
 
-[^1] Test machine: Macbook Air 2017, SSD
+[^1]: Test machine: Macbook Air 2017, SSD
