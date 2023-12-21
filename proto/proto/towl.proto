@@ -4,26 +4,33 @@ package towl;
 service TowlServer { 
   // Add log to servers
   rpc Add(Entry) returns (AddResponse);
+  // List towl files
+  rpc List(ListRequest) returns (ListResponse);
   // Get logs
   rpc Get(GetRequest) returns (stream Entry);
   // Set config
   rpc Config(ConfigRequest) returns (ConfigResponse);
-  // Erase DB completely
-  rpc Erase(EraseRequest) returns (EraseResponse);
+  // Retain these files
+  rpc Retain(RetainRequest) returns (RetainResponse);
 }
 
 message Entry {
-  string id = 1;
-  string sender = 2;
-  string received_rfc3339 = 3;
-  string log_json = 4;
+  string sender = 1;
+  string received_rfc3339 = 2;
+  string log_json = 3;
 }
 
 message AddResponse {}
 
+message ListRequest {}
+
+message ListResponse {
+  repeated int32 ids = 1;
+}
+
 message GetRequest {
-  string after_dtime_rfc3339 = 1;
-  string after_id = 2;
+  string file_id = 1;
+  string after_counter = 2;
   bool follow = 3;
 }
 
@@ -35,6 +42,8 @@ message ConfigResponse {
   string response_str = 2;
 }
 
-message EraseRequest {}
+message RetainRequest {
+  int32 retain_after_this_id = 1;
+}
 
-message EraseResponse {}
+message RetainResponse {}

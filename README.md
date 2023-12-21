@@ -57,3 +57,7 @@ Adding 50_000 entries takes ~ 1.74 secs [^1].\
 Reading 50_000 entries takes ~ 0.58 secs [^1].
 
 [^1]: Test machine: Macbook Air 2017, SSD
+
+## Performance requirements
+
+As Towl stores all the data in towl files, reading and writing is streamed, it has low memory need (maybe ~10 MB) to store and manage data. For log analysis it needs CPU cores, and for storing huge amount of logs it needs free disk space. Currently we have no real life data for log analysis, but it should easily handle a few millions of log entries.
