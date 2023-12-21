@@ -18,25 +18,25 @@ Contains a magic number, towl version number, meta data (organization name, file
 
 Header is serialized via bincode serializer.
 
-| data field | description |
-| --- | --- |
-| magic | towl magic number |
-| version | i32 |
-| org | organization name, optional |
-| title | title of file, optional |
-| id | file id, we use it to identify towl file |
+| data field | type | description |
+| --- | --- | --- |
+| magic | [u8;9] | towl magic number |
+| version | i32 | towl version number |
+| org | String | organization name, optional |
+| title | String | title of file, optional |
+| id | String | file id, we use it to identify towl file |
 
 ## Index
 
 Contains the following data:
 
-| Name | Description |
-| --- | --- |
-|Opened dtime | what time the log file was created|
-|Closed dtim | What time the log file was closed |
-|Count | how many entries it stores|
-| First date | Received dtime of first stored log entry
-| Last date | Received dtime of last stored log entry
+| Name | Type | Description |
+| --- | --- | --- |
+|Opened dtime | Dtime | what time the log file was created|
+|Closed dtim | Dtime | What time the log file was closed |
+|Count | i32 | how many entries it stores|
+| First date | Dtime | Received dtime of first stored log entry
+| Last date | Dtime | Received dtime of last stored log entry
 
 Header is serialized via bincode serializer.
 
@@ -48,12 +48,12 @@ In log data we store entries.
 
 *Entry*
 
-|Field|Description|
-|---|---|
-|sender|log collector ID|
-|received|received dtime|
-|log_format|log format encoded with number|
-|log_entry|log message|
+|Field|Type|Description|
+|---|---|---|
+|sender|String|log collector ID|
+|received|Dtime|received dtime|
+|log_format|i32|log format encoded with number|
+|log_entry|String|log message|
 
 ### Log format code table
 
