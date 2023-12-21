@@ -53,7 +53,7 @@ In log data we store entries.
 |sender|log collector ID|
 |received|received dtime|
 |log_format|log format encoded with number|
-|log_json|json encoded log message|
+|log_entry|log message|
 
 ### Log format code table
 
