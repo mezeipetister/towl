@@ -20,7 +20,7 @@ async fn main() {
 
   let now = std::time::Instant::now();
 
-  const SIZE: i32 = 800_000;
+  const SIZE: i32 = 50_000;
 
   // Perform write
   write(SIZE, log.clone()).await;

@@ -50,3 +50,10 @@ For managing log entries we have 2 kind of data partition strategy. Store entrie
 ## Syncinc data
 
 From local point of view we can grab remote data by a file ID, and/or count number. If we have a local copy of a data file with ID 3, and it contains 47_000 entries, but that file has 70_000 entries remotely, we can request a partial update by pointint ID:3, COUNT: 47_000. This request should pull the remaining 23_000 entries.
+
+## Performance
+
+Adding 50_000 entries takes ~ 1.74 secs [^1]
+Reading 50_000 entries takes ~ 0.58 secs [^1]
+
+[^1] Test machine: Macbook Air 2017, SSD
