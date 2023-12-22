@@ -15,14 +15,14 @@ use tokio::task::spawn_blocking;
 //   i
 // }
 
-fn create_hash(from: &str) -> String {
-  // create a Sha256 object
-  let mut hasher = Sha256::new();
-  // Update hasher
-  hasher.update(from.as_bytes());
-  // Return hash String
-  format!("{:x}", hasher.finalize())
-}
+// fn create_hash(from: &str) -> String {
+//   // create a Sha256 object
+//   let mut hasher = Sha256::new();
+//   // Update hasher
+//   hasher.update(from.as_bytes());
+//   // Return hash String
+//   format!("{:x}", hasher.finalize())
+// }
 
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Config {
@@ -89,25 +89,21 @@ async fn sender(mut rx: Receiver<String>, config: Config) {
   .await
   .expect("Error connecting to remote");
 
-  while let Some(log_json) = rx.recv().await {
-    // Create ID
-    let id = {
-      let log_json_cloned = log_json.clone();
-      spawn_blocking(move || create_hash(&log_json_cloned))
-        .await
-        .expect("Error creating hash value")
-    };
+  while let Some(log_entry) = rx.recv().await {
     // Get sender ID
     let sender = config.sender_name.clone();
     // Calculate received date as RFC3339
     let received_rfc3339 = Utc::now().to_rfc3339();
 
+    // Log format Journalctl JSON
+    let log_format = 1;
+
     let _ = remote
       .add(Entry {
-        id,
         sender,
         received_rfc3339,
-        log_json,
+        log_format,
+        log_entry,
       })
       .await
       .expect("Error adding log entry to remote");
