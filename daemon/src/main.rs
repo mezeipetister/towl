@@ -82,7 +82,7 @@ async fn main() {
 
 async fn sender(mut rx: Receiver<String>, config: Config) {
   // Connect to remote
-  let mut remote = proto::towl::towl_server_client::TowlServerClient::connect(format!(
+  let mut remote = proto::towl::towl_client::TowlClient::connect(format!(
     "{}:{}",
     &config.remote_addr, &config.remote_port
   ))

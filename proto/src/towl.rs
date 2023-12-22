@@ -63,15 +63,15 @@ pub struct RetainRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RetainResponse {}
 /// Generated client implementations.
-pub mod towl_server_client {
+pub mod towl_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct TowlServerClient<T> {
+    pub struct TowlClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl TowlServerClient<tonic::transport::Channel> {
+    impl TowlClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -82,7 +82,7 @@ pub mod towl_server_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> TowlServerClient<T>
+    impl<T> TowlClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -100,7 +100,7 @@ pub mod towl_server_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> TowlServerClient<InterceptedService<T, F>>
+        ) -> TowlClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -114,7 +114,7 @@ pub mod towl_server_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            TowlServerClient::new(InterceptedService::new(inner, interceptor))
+            TowlClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -146,7 +146,7 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Add");
+            let path = http::uri::PathAndQuery::from_static("/towl.Towl/Add");
             self.inner.unary(request.into_request(), path, codec).await
         }
         /// List towl files
@@ -164,7 +164,7 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/List");
+            let path = http::uri::PathAndQuery::from_static("/towl.Towl/List");
             self.inner.unary(request.into_request(), path, codec).await
         }
         /// Get logs
@@ -185,7 +185,7 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Get");
+            let path = http::uri::PathAndQuery::from_static("/towl.Towl/Get");
             self.inner.server_streaming(request.into_request(), path, codec).await
         }
         /// Set config
@@ -203,7 +203,7 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Config");
+            let path = http::uri::PathAndQuery::from_static("/towl.Towl/Config");
             self.inner.unary(request.into_request(), path, codec).await
         }
         /// Retain these files
@@ -221,18 +221,18 @@ pub mod towl_server_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/towl.TowlServer/Retain");
+            let path = http::uri::PathAndQuery::from_static("/towl.Towl/Retain");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod towl_server_server {
+pub mod towl_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with TowlServerServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with TowlServer.
     #[async_trait]
-    pub trait TowlServer: Send + Sync + 'static {
+    pub trait Towl: Send + Sync + 'static {
         /// Add log to servers
         async fn add(
             &self,
@@ -264,13 +264,13 @@ pub mod towl_server_server {
         ) -> Result<tonic::Response<super::RetainResponse>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct TowlServerServer<T: TowlServer> {
+    pub struct TowlServer<T: Towl> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: TowlServer> TowlServerServer<T> {
+    impl<T: Towl> TowlServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -304,9 +304,9 @@ pub mod towl_server_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for TowlServerServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for TowlServer<T>
     where
-        T: TowlServer,
+        T: Towl,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -322,10 +322,10 @@ pub mod towl_server_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/towl.TowlServer/Add" => {
+                "/towl.Towl/Add" => {
                     #[allow(non_camel_case_types)]
-                    struct AddSvc<T: TowlServer>(pub Arc<T>);
-                    impl<T: TowlServer> tonic::server::UnaryService<super::Entry>
+                    struct AddSvc<T: Towl>(pub Arc<T>);
+                    impl<T: Towl> tonic::server::UnaryService<super::Entry>
                     for AddSvc<T> {
                         type Response = super::AddResponse;
                         type Future = BoxFuture<
@@ -358,10 +358,10 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
-                "/towl.TowlServer/List" => {
+                "/towl.Towl/List" => {
                     #[allow(non_camel_case_types)]
-                    struct ListSvc<T: TowlServer>(pub Arc<T>);
-                    impl<T: TowlServer> tonic::server::UnaryService<super::ListRequest>
+                    struct ListSvc<T: Towl>(pub Arc<T>);
+                    impl<T: Towl> tonic::server::UnaryService<super::ListRequest>
                     for ListSvc<T> {
                         type Response = super::ListResponse;
                         type Future = BoxFuture<
@@ -394,11 +394,11 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
-                "/towl.TowlServer/Get" => {
+                "/towl.Towl/Get" => {
                     #[allow(non_camel_case_types)]
-                    struct GetSvc<T: TowlServer>(pub Arc<T>);
+                    struct GetSvc<T: Towl>(pub Arc<T>);
                     impl<
-                        T: TowlServer,
+                        T: Towl,
                     > tonic::server::ServerStreamingService<super::GetRequest>
                     for GetSvc<T> {
                         type Response = super::Entry;
@@ -433,10 +433,10 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
-                "/towl.TowlServer/Config" => {
+                "/towl.Towl/Config" => {
                     #[allow(non_camel_case_types)]
-                    struct ConfigSvc<T: TowlServer>(pub Arc<T>);
-                    impl<T: TowlServer> tonic::server::UnaryService<super::ConfigRequest>
+                    struct ConfigSvc<T: Towl>(pub Arc<T>);
+                    impl<T: Towl> tonic::server::UnaryService<super::ConfigRequest>
                     for ConfigSvc<T> {
                         type Response = super::ConfigResponse;
                         type Future = BoxFuture<
@@ -469,10 +469,10 @@ pub mod towl_server_server {
                     };
                     Box::pin(fut)
                 }
-                "/towl.TowlServer/Retain" => {
+                "/towl.Towl/Retain" => {
                     #[allow(non_camel_case_types)]
-                    struct RetainSvc<T: TowlServer>(pub Arc<T>);
-                    impl<T: TowlServer> tonic::server::UnaryService<super::RetainRequest>
+                    struct RetainSvc<T: Towl>(pub Arc<T>);
+                    impl<T: Towl> tonic::server::UnaryService<super::RetainRequest>
                     for RetainSvc<T> {
                         type Response = super::RetainResponse;
                         type Future = BoxFuture<
@@ -520,7 +520,7 @@ pub mod towl_server_server {
             }
         }
     }
-    impl<T: TowlServer> Clone for TowlServerServer<T> {
+    impl<T: Towl> Clone for TowlServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -530,7 +530,7 @@ pub mod towl_server_server {
             }
         }
     }
-    impl<T: TowlServer> Clone for _Inner<T> {
+    impl<T: Towl> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone())
         }
@@ -540,7 +540,7 @@ pub mod towl_server_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: TowlServer> tonic::server::NamedService for TowlServerServer<T> {
-        const NAME: &'static str = "towl.TowlServer";
+    impl<T: Towl> tonic::server::NamedService for TowlServer<T> {
+        const NAME: &'static str = "towl.Towl";
     }
 }

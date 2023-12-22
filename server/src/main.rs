@@ -1,23 +1,17 @@
-use corelib::logger::{Config, Logger};
+use corelib::fs::LogFile;
+use proto::towl::towl_server::Towl;
 use std::{
   convert::Infallible,
   net::{SocketAddr, ToSocketAddrs},
+  sync::Arc,
 };
-
-use proto::towl::towl_server::Towl;
+use tokio::sync::Mutex;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{transport::Server, Response, Status};
-use warp::Filter;
-
-fn width_context(
-  c: Context,
-) -> impl Filter<Extract = (Context,), Error = std::convert::Infallible> + Clone {
-  warp::any().map(move || c.clone())
-}
 
 #[derive(Clone)]
 struct Context {
-  logger: Logger,
+  logger: Arc<Mutex<LogFile>>,
 }
 
 impl Context {
@@ -32,7 +26,7 @@ impl Context {
 }
 
 #[tonic::async_trait]
-impl Towl for Context {
+impl TowlServer for Context {
   type GetLogsStream = ReceiverStream<Result<proto::towl::Entry, Status>>;
   async fn get_logs(
     &self,
